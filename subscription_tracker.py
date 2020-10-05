@@ -53,7 +53,7 @@ class MainInterface:
         emResults = EmailResults(self._main,self._fieldnames,self.email_entry.get())
 
 
-class EmailResults(MainInterface):
+class EmailResults:
 
     def __init__(self,root,fieldnames,email_search):
         self.emRes = tk.Toplevel(root)
@@ -76,7 +76,7 @@ class EmailResults(MainInterface):
         self.emRes.destroy()
 
 
-class SubResult(MainInterface):
+class SubResult:
 
     def __init__(self,root,fieldnames,sub_search):
         self.subResult = tk.Toplevel(root)
@@ -116,7 +116,7 @@ class SubResult(MainInterface):
         self.subResult.destroy()
 
 
-class AddPage(MainInterface):
+class AddPage:
     
     def __init__(self,root):
         self.addPage = tk.Toplevel(root)
