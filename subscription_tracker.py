@@ -7,7 +7,10 @@ import csv
 import tkinter as tk
 
 class MainInterface:
-
+    """
+    Load main window.
+    """
+    
     def __init__(self, main):
         self._main = main
         main.title("Subscription Tracker")
@@ -15,7 +18,7 @@ class MainInterface:
 
         # subscription search bar
         sub_search = tk.Frame(main)
-        # subscription entry box label (left of)
+        # subscription entry box label (left of entry box)
         sub_label = tk.Label(sub_search, text="Subscription: ")
         sub_label.pack(side=tk.LEFT,anchor=tk.NW)
         # entry box for subscription name
@@ -28,7 +31,7 @@ class MainInterface:
 
         # email search bar
         email_search = tk.Frame(main)
-        # email entry box label (left of)
+        # email entry box label (left of entry box)
         email_label = tk.Label(email_search, text="Email: ")
         email_label.pack(side=tk.LEFT,anchor=tk.W)
         # entry box for email
@@ -39,7 +42,7 @@ class MainInterface:
         findBtn_em.pack(side=tk.RIGHT,anchor=tk.E)
         email_search.pack(anchor=tk.W)
 
-        # button that brings user to a widget to add account details
+        # button that brings user to a window to add account details
         addBtn = tk.Button(main, text="Add", width=10, command=self.add)
         addBtn.pack(side=tk.BOTTOM,anchor=tk.SE)
         
@@ -54,6 +57,9 @@ class MainInterface:
 
 
 class EmailResults:
+    """
+    Load window that displays subscription linked to an email account.
+    """
 
     def __init__(self,root,fieldnames,email_search):
         self.emRes = tk.Toplevel(root)
@@ -65,6 +71,7 @@ class EmailResults:
         cancelBtn = tk.Button(self.emRes, text="Cancel", width=10, command=self.cancel)
         cancelBtn.pack(side=tk.BOTTOM,anchor=tk.SW)
 
+        # print subscriptions linked to email to the window
         with open('subscription_data.csv', 'r') as email_specific:
             email_reader = csv.DictReader(email_specific, fieldnames=fieldnames)
             subscriptions = [row for row in email_reader if row['Email'] == email_search]
@@ -77,7 +84,10 @@ class EmailResults:
 
 
 class SubResult:
-
+    """
+    Load window that displays subscription details.
+    """
+    
     def __init__(self,root,fieldnames,sub_search):
         self.subResult = tk.Toplevel(root)
         self.subResult.title("Subscription details")
@@ -86,44 +96,51 @@ class SubResult:
         cancelBtn = tk.Button(self.subResult, text="Cancel", width=10, command=self.cancel)
         cancelBtn.pack(side=tk.BOTTOM,anchor=tk.SW)
 
+        # find subscription account information
         with open('subscription_data.csv', 'r') as website_specific:
             reader = csv.DictReader(website_specific,fieldnames=fieldnames)
             rows = [row for row in reader if row['Subscription'] == sub_search]
 
+        # decide if the subscription exists and print results to window
         try:
             data = rows[0]
+
+            # subscription account information as a string
+            sub = "Subscription: "+data.get('Subscription')
+            email = "Email: "+data.get('Email')
+            username = "Username: "+data.get('Username')
+            password = "Password: "+data.get('Password')
+
+            sub_label = tk.Label(self.subResult, text=sub)
+            sub_label.pack(anchor=tk.NW)
+
+            email_label = tk.Label(self.subResult, text=email)
+            email_label.pack(anchor=tk.NW)
+
+            username_label = tk.Label(self.subResult, text=username)
+            username_label.pack(anchor=tk.NW)
+
+            password_label = tk.Label(self.subResult, text=password)
+            password_label.pack(anchor=tk.NW)
         except IndexError:
-            return None
-
-        sub = "Subscription: "+data.get('Subscription')
-        email = "Email: "+data.get('Email')
-        username = "Username: "+data.get('Username')
-        password = "Password: "+data.get('Password')
-
-        sub_label = tk.Label(self.subResult, text=sub)
-        sub_label.pack(anchor=tk.NW)
-
-        email_label = tk.Label(self.subResult, text=email)
-        email_label.pack(anchor=tk.NW)
-
-        username_label = tk.Label(self.subResult, text=username)
-        username_label.pack(anchor=tk.NW)
-
-        password_label = tk.Label(self.subResult, text=password)
-        password_label.pack(anchor=tk.NW)
+            errorPrint = tk.Label(self.subResult, text='Subscription does not exist.')
+            errorPrint.pack(anchor=tk.N)
 
     def cancel(self):
         self.subResult.destroy()
 
 
 class AddPage:
+    """
+    Load window where subscription account can be added.
+    """
     
     def __init__(self,root):
         self.addPage = tk.Toplevel(root)
         self.addPage.title("Add Subscription")
 
         sub_add = tk.Frame(self.addPage)
-        # subscription entry box label (left of)
+        # subscription entry box label (left of entry box)
         sub_label = tk.Label(sub_add, text="Subscription: ")
         sub_label.pack(side=tk.LEFT,anchor=tk.NW)
         # entry box for subscription name
@@ -132,7 +149,7 @@ class AddPage:
         sub_add.pack(anchor=tk.W)
 
         email_add = tk.Frame(self.addPage)
-        # email entry box label (left of)
+        # email entry box label (left of entry box)
         email_label = tk.Label(email_add, text="Email: ")
         email_label.pack(side=tk.LEFT,anchor=tk.W)
         # entry box for email
@@ -141,19 +158,19 @@ class AddPage:
         email_add.pack(anchor=tk.W)
 
         username_add = tk.Frame(self.addPage)
-        # email entry box label (left of)
+        # username entry box label (left of entry box)
         username_label = tk.Label(username_add, text="Username: ")
         username_label.pack(side=tk.LEFT,anchor=tk.W)
-        # entry box for email
+        # entry box for username
         self.username_entry = tk.Entry(username_add, width=30)
         self.username_entry.pack(side=tk.LEFT,anchor=tk.W)
         username_add.pack(anchor=tk.W)
 
         password_add = tk.Frame(self.addPage)
-        # email entry box label (left of)
+        # password entry box label (left of entry box)
         password_label = tk.Label(password_add, text="Password: ")
         password_label.pack(side=tk.LEFT,anchor=tk.W)
-        # entry box for email
+        # entry box for password
         self.password_entry = tk.Entry(password_add, width=30)
         self.password_entry.pack(side=tk.LEFT,anchor=tk.W)
         password_add.pack(anchor=tk.W)
@@ -170,12 +187,18 @@ class AddPage:
         self.addPage.destroy()
 
     def add(self):
+        """
+        Store the account information and destroy the window.
+        """
         account = Account(self.sub_entry.get(), self.email_entry.get(), self.username_entry.get(), self.password_entry.get())
         account.addAccount()
         self.addPage.destroy()
 
 
 class Account:
+    """
+    Create an instance of a subscription account.
+    """
 
     def __init__(self, subscription, email, username, password):
         self._subscription = subscription
@@ -196,6 +219,9 @@ class Account:
         return self._password
 
     def addAccount(self):
+        """
+        Append the account information to subscription_data.csv.
+        """
         sub_dict = [self.get_subscription(),self.get_email(),self.get_username(),self.get_password()]
         with open('subscription_data.csv', 'a+', newline='') as sa:
             csv_writer = csv.writer(sa)
